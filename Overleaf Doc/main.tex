@@ -218,7 +218,11 @@ La idea es mantener los features originales y luego crear nuevos features a part
 
 Para esta feature se agregan 4 features nuevas: el texto limpio sin links, saltos de lineas y espacios innecesarios y 3 features que nos indican indican los hashtags, menciones y links en caso de existir y la palabra ‘no’ cuando no existen. 
 
-[imagen]
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.9]{imgs/table_1.jpg}
+    \label{tp:fig:location}
+\end{figure}
 
 \paragraph{Creación de features estadísticas\\}
 \newline También a partir de la feature ‘text se crearon features estadísticas que nos indican:
@@ -234,7 +238,11 @@ Para esta feature se agregan 4 features nuevas: el texto limpio sin links, salto
   \item Y proporción de letras mayúsculas
 \end{itemize}
 
-[imagen2]
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.9]{imgs/table_2.jpg}
+    \label{tp:fig:location}
+\end{figure}
 
 
 \subsubsection{Feature ‘location’}
@@ -246,7 +254,12 @@ Para esta feature se agregan 4 features nuevas: el texto limpio sin links, salto
 Luego se procedió a unificar los valores que indicaban un mismo lugar pero estaban escritos de diferentes maneras, por ejemplo: Reino Unido es referenciado como ‘United Kingdom’, ‘UK’ y ‘Britain’, entonces se pasó todo a un único valor ‘UK’.
 Solo se hizo esto con los principales valores, a los valores que no representaban mucho peso se los llamo como ‘other’.
 
-[image3]
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.7]{imgs/graph_1.jpg}
+    \caption{Gráfico de promedio de target por ubicación}
+    \label{tp:fig:equilibrium}
+\end{figure}
 
 \paragraph{Variables Categóricas\\}
 Consideramos a las features keyword y location como categóricas, es por ello que se aplicó sobre ellas un target encoding utilizando la feature ‘keyword’ y la fature creada ‘location\_clean’
@@ -350,7 +363,13 @@ Se entrena el modelo con el subset de entrenamiento y se realizan predicciones s
 Al realizar esta optimización se obtuvo que la combinación de funciones que mejor resultado obtuvo fue aquella formada por todas las funciones declaradas excepto la función que toma a los links como una única palabra 'http'.
 Teniendo esta combinación óptima de funciones, se entrena el algoritmo con esta combinación y se realizan las predicciones sobre el set de test. Se suben estas predicciones a la competencia de Kaggle y se obtuvo un puntaje de 0.79037 que ubicó al Team en la posición 873:
 
-\textbf{[imagen]\\}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.9]{imgs/tweet_1.jpg}
+    \label{tp:fig:equilibrium}
+\end{figure}
 
 
 Este resultado mejora bastante los resultados anteriores obtenidos aplicando las funciones de a una.
@@ -393,12 +412,22 @@ Se realizan las predicciones y se hace el submit (no se pudo realizar porque nos
 \subsubsection{Optimizando el modelo}
 Como bien sabemos, podemos optimizar el modelo buscando los hiperparámetros que mejor 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \section{Conclusión}
 Fue muy importante realizar los primeros submits con la predicción según el peso de las palabras de los tweets ya que al realizarlas se comprobó que el valor del target tiene que ser 1 o 0 y no un valor real entre 0 y 1. Esto quiere decir que la competencia es una competencia de clasificación y no de regresión.
 También notamos en el Finger como al buscar la combinación de funciones que mejor resultado dan en un cross validation la puntuación mejora considerablemente, por lo que el proceso de optimización es un proceso muy importante para cualquier algoritmo de machine learning.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Referencias}
+\begin{itemize}
+  \item 75.06, 95.58 Organización de Datos - Apunte del curso - Luis Argerich, Natalia Golmar, Damián Martinelli, Martín Ramos Mejía, Juan Andrés Laura.
+  \item Videos del canal de youtube.com de 7506 - Organización de Datos (\url{https://www.youtube.com/channel/UCCG5Fs18xdJlNstK1sbKxuA})
+  \item \url{http://apuntes-r.blogspot.com/2014/12/bagging-para-mejorar-un-modelo.html}
+\end{itemize}
 
 \end{document}
