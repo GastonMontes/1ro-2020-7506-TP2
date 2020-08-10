@@ -391,7 +391,7 @@ En esta sección se aplicará tensorflow para realizar la clasificación binaria
 Para realizar la primer clasificación utilizando TensorFlow se utilizan los archivos ‘train\_processed.csv’ y ‘test\_processed.csv’.
 De estos archivos solo nos quedamos con las columnas ‘text\_clean’ y ‘target’, en el caso del train, ya que es el label a predecir.
 Dividimos el train en dos: el texto del tweet y el target del tweet.
-Modelo dummy
+\paragraph{Modelo dummy\\}
 En este caso se creó un tokenizador con las 3000 palabras más utilizadas de nuestro set de datos.
 Se convierten los tweets en vectores en base al índice de palabras que nos da el tokenizador obteniendo a los tweets como una lista de vectores.
 Creamos una matriz del tipo one-hot encoding en base a esta lista de vectores y esa es la matriz que vamos a utilizar para realizar el entrenamiendo del modelo. Este proceso se hace tanto sobre el train como sobre el test.
@@ -409,7 +409,7 @@ Se entrena el modelo con batch\_size de 32, epoch de 20, validation de 0.2.
 Se realizan las predicciones y se hace el submit (no se pudo realizar porque nos bloqueó Kaggle).
 
 
-\subsubsection{Optimizando el modelo}
+\paragraph{Optimizando el modelo\\}
 Como bien sabemos, podemos optimizar el modelo buscando los hiperparámetros que mejor 
 
 
