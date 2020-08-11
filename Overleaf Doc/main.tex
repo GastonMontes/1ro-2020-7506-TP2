@@ -131,6 +131,11 @@ Este problema de machine learning es un problema de clasificación ya que se deb
 \subsection{Introducción teórica}
 A continuación se detallan algunos conceptos básicos o algoritmos de machine learning vistos en clase y que se aplicarán en los algoritmos de machine learning a la hora de realizar la clasificación.
 
+\subsection{Entrenamiento}
+El entrenamiento de un modelo de machine learning es un problema de optimización que consiste en buscar los parámetros que maximizan/minimizan la clasificación.
+Es el proceso que más tiempo y recursos consume en general en los modelos de machine learning y varían dependiendo el modelo a utilizar.
+Una vez entrenado el modelo, el mismo queda representado por sus parámetros.
+
 
 \subsection{Errores}
 A un procesador arriban instrucciones siguiendo una distribución exponencial con una tasa de $250$ instrucciones por microsegundo.
@@ -229,6 +234,10 @@ Para esta feature se agregan 4 features nuevas: el texto limpio sin links, salto
 \begin{itemize}
   \item longitud
   \item Cantidad de palabras
+  \item Cantidad de palabras unicas
+  \item Longitud de palabras promedio
+  \item Cantidad de caracteres
+  \item Cantidad de digitos
   \item Cantidad de palabras ‘stopwords’
   \item Cantidad de puntuaciones
   \item Cantidad de hashtags
@@ -272,7 +281,7 @@ Se aplica un bag of words sobre las features ‘links’, ‘mentions’ y ‘ha
 
 \paragraph{TF-IDF\\}
 A partir de la feature ‘text\_clean’ se aplica el algoritmo TF-IDF para crear nuevas features.
-Para aplicar el algoritmo a nuestro set de datos se toman solo las palabras que aparecen masde 10 veces, tomando unigramas y bigramas.
+Para aplicar el algoritmo a nuestro set de datos se toman solo las palabras que aparecen mas de 10 veces, tomando unigramas y bigramas.
 
 \paragraph{Creación de archivo csv\\}
 A partir de las transformaciones creadas sobre el set de datos original, se crearon 4 archivos separados por comas nuevos tanto para train como para test:
@@ -374,11 +383,16 @@ Teniendo esta combinación óptima de funciones, se entrena el algoritmo con est
 
 Este resultado mejora bastante los resultados anteriores obtenidos aplicando las funciones de a una.
 
+
+\subsubsection{Hiper-parámetro punto de corte}
+A la hora de realizar la clasificación se clasifica que un tweet en real o fake según si el promedio del peso de sus palabras es mayor o igual a 0.5 o no respectivamente.
+En este apartado vamos a variar desde 0 a 1, con variaciones de 0.1 para encontrar el valor de este hiper-parámetro que mejor resultados nos dé con nuestro set de datos.
+Al realizar esta nueva iteración se llegó a la conclusión que el mejor resultado para el set de entrenamiento de dió aplicando las funciones que pasan el set de datos a lowercase y la que elimina del set de datos los stopwords con un punto de corte de 0.4. Al realizar el submit no se mejoró el resultado, este dió tan solo 0.77045.
+
 Hiper-parámetro punto de corte
 A la hora de realizar la clasificación se clasifica que un tweet en real o fake según si el promedio del peso de sus palabras es mayor o igual a 0.5 o no respectivamente.
 En este apartado vamos a variar desde 0 a 1, con variaciones de 0.1 para encontrar el valor de este hiper-parámetro que mejor resultados nos dé con nuestro set de datos.
 Al realizar esta nueva iteración se llegó a la conclusión que el mejor resultado para el set de entrenamiento de dió aplicando las funciones que pasan el set de datos a lowercase y la que elimina del set de datos los stopwords con un punto de corte de 0.4. Al realizar el submit no se mejoró el resultado, este dió tan solo 0.77045.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -412,6 +426,53 @@ Se realizan las predicciones y se hace el submit (no se pudo realizar porque nos
 \paragraph{Optimizando el modelo\\}
 Como bien sabemos, podemos optimizar el modelo buscando los hiperparámetros que mejor 
 
+
+\subsection{Random Forest}
+Es uno de los algoritmos de bagging más usados actualmente porque da buenos resultados en la mayoría de los sets de datos, también tiene la ventaja de que nos permite evaluar la importancia de los features que creamos para la toma de decisiones de los árboles.
+
+Lo que hicimos fue aprovechar procesamiento anteriormente realizado para otros algoritmos y leer los features de los archivos train\_processed\_tf\_idf\_bow.csv para predecir, entonces utilizaremos test\_processed\_tf\_idf\_bow.csv que tiene los datos de testeo con el procesamiento realizado en los datos de entrenamiento.
+
+Esto nos dio un resultado de 0.78210. Un poco por debajo de lo esperado, sobretodo porque la Matriz de confusión nos había dado muy buenos resultados.
+
+Aprovechamos el Random Forest para obtener los features más importantes.
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.9]{imgs/graph_2.jpg}
+    \caption{Gráfico de features más importantes}
+    \label{tp:fig:equilibrium}
+\end{figure}
+
+Si bien todos están por debajo de 0.15 de importancia. El feature keywork\_target parece destacar, este feature es keyword pero procesado como category. Le sigue en importancia “Unamed: 0”, en este caso esta es la etiqueta con la que quedó denominado el id de la row, así que deberemos omitirlo del análisis.
+“caps\_ratio” es un feature que indica cuántas mayúsculas tiene un tuit sobre la cantidad de texto total del mismo.
+“stop\_word\_count” 
+
+
+\subsection{LightGBM}
+Este es un algoritmo que se basa en el rendimiento. Fue diseñado para ser rápido y escalable, al igual que XGBoost está basado en árboles pero está basado en un crecimiento del árbol hacia las hojas, al contrario del XGBoost que se orienta hacia el el crecimiento en niveles (“a lo ancho”). Una ventaja es que suele ser más rápido de entrenar y consume menos memoria, pero hay que tener cuidado con el overfitting que se puede producir, esto se puede solucionar limitando el nivel de profundidad de los árboles.
+
+El enfoque que hicimos para utilizar este algoritmo fue distinto a los anteriores. Partimos desde el set de datos utilizando solo el texto. Luego, utilizando el Universal Sentence Encoder de Google, transformamos cada texto en un encoding de igual número de columnas por cada fila.
+Y con estos datos transformados entrenamos el modelo de LightGBM. En esta ocasión conseguimos un puntaje de 0.81887
+
+\subsection{Regresion Logistica}
+Con este modelo en un principio se logró un puntaje de 0.79313. El cual se pudo mejorar el puntaje agregando más estadísticas sobre la columna text\_clean. Finalmente se logró un puntaje de 0.79436
+
+
+\subsection{BERT}
+Este es una técnica de procesamiento de lenguaje pre entrenada desarrollada por Google que primero procesa el texto de manera tal que se consiga información sobre el contexto de cada palabra del mismo y luego se utiliza un algoritmo para realizar una predicción categórica si es necesario.
+En este caso utilizamos DistilBertModel, una implementación de BERT, pre entrenada de manera tal que facilita el reconocimiento de emociones en textos.
+El procesamiento que hicimos fue el siguiente: primero, solo con las primeras 2.000 filas (por problemas de RAM en el proceso siguiente), generamos un token por cada palabra del mismo. 
+Luego, para que cada fila quedara con el mismo tamaño, rellenamos con “paddings” las filas que quedaran más cortas.
+Después de esto indicamos al modelo de BERT qué celdas de nuestra matriz de datos correspondían a paddings y cuales  a datos a tener en cuenta.
+Finalmente, con esos datos ya procesados de esta forma, realizamos una regresión logística para entrenar a nuestro modelo.
+Contrariamente a lo esperado, este resultado no fue tan bueno como esperábamos, obtuvimos un puntaje de 0.78976.
+
+\subsection{GloVe}
+Es un algoritmo de aprendizaje no-supervisado para obtener representaciones de vectores de palabras significativas. El entrenamiento se genera sobre la estadística de co-ocurrencia entre un par de palabras. Este método permite observar patrones lineales en el espacio vector-palabra.
+En este caso la implementación es sencilla por lo que el resultado del testeo es bajo (0.68). Comparando con otros notebooks en kaggle, se observa que luego de una análisis extenso que incluye limpieza y corrección ortográfica de datos.
+Otro dato importante es que el algoritmo sale a relucir con textos mas largos ya que al poseer múltiples tuplas se tiene una aproximación más realista.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
